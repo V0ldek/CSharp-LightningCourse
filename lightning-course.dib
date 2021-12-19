@@ -1,0 +1,2553 @@
+#!markdown
+
+# Lightning course in C#
+
+<small>Copyright (c) Mateusz Gienieczko 2021</small>
+
+Przeczytaj wstęp tutaj: https://mimuw.edu.pl/~mg394302/bd2021-csharp.html.
+
+#!markdown
+
+<h2 id="toc">Table of Contents</h2>
+
+ToC jest zbugowana, bo VS Code nie indeksuje całego notebooka na raz, więc nie ma pojęcia, że te odnośniki się do czegoś odnoszą. Bardzo smutne.
+
+0. <a href="#co-to-c--">Co to C#?</a>
+1. <a href="#jak-dzia-a-c--">Jak działa C#?</a>
+<br>
+    1.0 <a href="#klasyka-gatunku">Klasyka gatunku</a>
+<br>
+    1.1 <a href="#desugarisation">Desugarisation</a>
+<br>
+    1.2 <a href="#using-directives">Using directives</a>
+<br>
+    1.3 <a href="#podstawowe-typy">Podstawowe typy</a>
+<br>
+    1.4 <a href="#keyword--var-">Keyword `var`</a>
+<br>
+    1.5 <a href="#p-tla--foreach-">Pętla `foreach`</a>
+<br>
+    1.6 <a href="#access-specifiers">Access specifiers</a>
+<br>
+    1.7 <a href="#fields">Fields</a>
+<br>
+    1.8 <a href="#properties">Properties</a>
+<br>
+    1.9 <a href="#metody">Metody</a>
+<br>
+    1.10 <a href="#interfejsy">Interfejsy</a>
+<br>
+    1.11 <a href="#dziedziczenie">Dziedziczenie</a>
+<br>
+    1.12 <a href="#przeci--anie">Przeciążanie</a>
+<br>
+    1.13 <a href="#prze-adowywanie--overriding-">Przeładowywanie (overriding)</a>
+<br>
+    1.14 <a href="#konstruktory">Konstruktory</a>
+<br>
+    1.15 <a href="#keyword--init-">Keyword `init`</a>
+<br>
+    1.16 <a href="#sealed">Sealed</a>
+<br>
+    1.17 <a href="#klasy-abstrakcyjne">Klasy abstrakcyjne</a>
+<br>
+    1.18 <a href="#enums">Enums</a>
+<br>
+    1.19 <a href="#reference-types-vs-value-types">Reference types vs Value types</a>
+<br>
+    1.20 <a href="#nullability">Nullability</a>
+<br>
+    1.21 <a href="#parametry--ref--i--out-">Parametry `ref` i `out`</a>
+<br>
+    1.22 <a href="#r-wno--">Równość</a>
+<br>
+    1.23 <a href="#parse-i-tryparse">Parse i TryParse</a>
+<br>
+    1.24 <a href="#generics">Generics</a>
+<br>
+    1.25 <a href="#generic-constraints">Generic constraints</a>
+<br>
+    1.26 <a href="#kolekcje">Kolekcje</a>
+<br>
+    1.27 <a href="#stringi">Stringi</a>
+<br>
+    1.28 <a href="#statyczne-klasy">Statyczne klasy</a>
+<br>
+    1.29 <a href="#extension-methods">Extension methods</a>
+<br>
+    1.30 <a href="#operatory">Operatory</a>
+<br>
+    1.31 <a href="#rzutowanie">Rzutowanie</a>
+<br>
+    1.32 <a href="#boxing">Boxing</a>
+<br>
+    1.33 <a href="#przeci--anie-operator-w">Przeciążanie operatorów</a>
+<br>
+    1.34 <a href="#indekser">Indekser</a>
+<br>
+    1.35 <a href="#tuples--valuetuple-">Tuples (ValueTuple)</a>
+<br>
+    1.36 <a href="#wyj-tki">Wyjątki</a>
+<br>
+    1.37 <a href="#garbage-collector">Garbage collector</a>
+<br>
+    1.38 <a href="#dispose">Dispose</a>
+<br>
+    1.39 <a href="#atrybuty">Atrybuty</a>
+<br>
+    1.40 <a href="#-nameof-">`nameof`</a>
+<br>
+    1.41 <a href="#anonimowe-obiekty">Anonimowe obiekty</a>
+<br>
+    1.42 <a href="#delegates">Delegates</a>
+<br>
+    1.43 <a href="#lambdy">Lambdy</a>
+<br>
+    1.44 <a href="#lokalne-metody">Lokalne metody</a>
+<br>
+    1.45 <a href="#-linq"> LINQ</a>
+<br>
+    1.46 <a href="#-select----projekcja">`Select` - projekcja</a>
+<br>
+    1.47 <a href="#-where----selekcja-filtrowanie">`Where` - selekcja/filtrowanie</a>
+<br>
+    1.48 <a href="#-orderby----thenby----sortowanie">`OrderBy`, `ThenBy` - sortowanie</a>
+<br>
+    1.49 <a href="#-query-syntax"> Query syntax</a>
+<br>
+    1.50 <a href="#-selectmany----sp-aszczenie">`SelectMany` - spłaszczenie</a>
+<br>
+    1.51 <a href="#-groupby----grupowanie">`GroupBy` - grupowanie</a>
+<br>
+    1.52 <a href="#-join-">`Join`</a>
+<br>
+    1.53 <a href="#inne">Inne</a>
+<br>
+    1.54 <a href="#deferred-execution">Deferred execution</a>
+<br>
+    1.55 <a href="#-tolist----execute-">`ToList` - execute!</a>
+<br>
+    1.56 <a href="#agregacje">Agregacje</a>
+<br>
+    1.57 <a href="#-first----last----single-">`First`, `Last`, `Single`</a>
+<br>
+    1.58 <a href="#-count-">`Count`</a>
+<br>
+    1.59 <a href="#-all----any-">`All`, `Any`</a>
+2. <a href="#materia-y">Materiały</a>
+
+#!markdown
+
+<h2 id="co-to-c--">0. Co to C#?</h2> <small><a href="#toc">Back to top</a></small>
+
+**C# (obecnie 10)** &ndash; język zaprojektowany w 2000 przez Andersa Hejlsberga dla Microsoftu.
+
+**.NET** (obecnie 6) &ndash; wielki framework i biblioteka standardowa do języków uruchamianych pod CLR, w tym C#.
+
+**Roslyn** &ndash; główna implementacja kompilatora do C#, utrzymywana i rozwijana przez community i Microsoft.
+**CLI (Common Language Infrastructure)** &ndash; specyfikacja środowiska i bytecode’u do uruchamiania między innymi C#. Taka lepsza JVM.
+**CLR (Common Language Runtime)** &ndash; główna implementacja CLI.
+
+#!markdown
+
+<h2 id="jak-dzia-a-c--">1. Jak działa C#?</h2> <small><a href="#toc">Back to top</a></small>
+
+C# jest **obiektowym**, **statycznie typowanym**, **kompilowanym** językiem. Ma też najdłuższą listę obejmowanych paradygmatów jaką widziałem na Wikipedii. 
+> structured, imperative, object-oriented, event-driven, task-driven, functional, generic, reflective, concurrent
+
+It truly embraces the _general purpose_ label.
+ 
+C# jest zorientowany na bezpieczeństwo i wygodę developera. 
+- Memory safety
+- Type safety
+- Nie krzyczymy na język, że jest głupi (por. Java)
+- Język nie krzyczy na nas, że jesteśmy głupi (por. C++)
+
+Nawet wtedy pozwala nam porzucić granice zdrowego rozsądku i udostępnia typowanie dynamiczne (`dynamic`) oraz magiczny keyword `unsafe`, który wyłącza memory safety. Tutaj nie będziemy się nimi zajmować.
+
+#!markdown
+
+<h3 id="klasyka-gatunku">1.0 Klasyka gatunku</h3> <small><a href="#toc">Back to top</a></small>
+
+#!csharp
+
+Console.WriteLine("Hello, World!");
+
+#!markdown
+
+Nazwy klas i metod piszemy CamelCasem.
+
+#!markdown
+
+<h3 id="desugarisation">1.1 Desugarisation</h3> <small><a href="#toc">Back to top</a></small>
+
+#!csharp
+
+namespace SeeITSharp;
+
+public class HelloWorld
+{
+    public static void Main()
+    {
+        System.Console.WriteLine("Hello World!");
+    }
+}
+
+#!markdown
+
+- Namespace'y grupują powiązane ze sobą typy.
+- Obiektowość &ndash; każda metoda należy do jakiejś klasy.
+
+#!markdown
+
+<h3 id="using-directives">1.2 Using directives</h3> <small><a href="#toc">Back to top</a></small>
+
+#!csharp
+
+using System;
+
+namespace SeeITSharp;
+
+public class HelloWorld
+{
+    public static void Main()
+    {
+        Console.WriteLine("Hello World!");
+    }
+}
+
+#!markdown
+
+- Jeśli często używamy danego namespace'a to można go wprowadzić używając `using`.
+- Domyślnie wprowadzone są podstawowe namespace'y .NET-a.
+- No "import hell."
+
+Jak widać po errorach, skryptowa natura notebooków nie lubi się z deklaracjami namespace'ów i explicit `Main`-em, więc będziemy pomijać tę ceremonię.
+
+#!markdown
+
+<h3 id="podstawowe-typy">1.3 Podstawowe typy</h3> <small><a href="#toc">Back to top</a></small>
+
+Podstawowe funkcjonalności języka są podobne jak w Javie.  Mamy garść typów wbudowanych 🙊:
+- `bool` - `true`, `false`;
+- `byte` - 8 bitów;
+- `char` - 16 bitów do przechowywania znaku w Unicode;
+- `decimal` - 128 bitów z wysoką precyzją np. `1234.5678m`;
+- `double` - 64 bity, double precision floating point np. `1234.5678`;
+- `float` - 32 bity floating point np. `1234.5678f`;
+- `int` - 32 bity ze znakiem;
+- `long` - 64 bity ze znakiem;
+- `object` - korzeń hierarchii dziedziczenia wszystkich typów
+- `string` - napis.
+
+Mamy też tablice:
+
+#!csharp
+
+int[] tab = new int[16];
+
+for (int i = 0; i < tab.Length; ++i)
+{
+    tab[i] = i;
+}
+
+for (int i = 0; i < tab.Length; ++i)
+{
+    Console.Write(i.ToString() + " ");
+}
+Console.WriteLine();
+
+#!markdown
+
+Wielowymiarowe tablice deklarujemy jako tablice tablic 🙊:
+
+#!csharp
+
+int[][] jagged = new int[4][];
+for(int i = 0; i < jagged.Length; ++i)
+{
+    jagged[i] = new int[i + 1];
+}
+
+jagged[1][1] = 1;
+
+Console.WriteLine(jagged[1][1]);
+
+#!markdown
+
+<h3 id="keyword--var-">1.4 Keyword `var`</h3> <small><a href="#toc">Back to top</a></small>
+
+C# jest statycznie typowany, ale niekoniecznie explicitly typowany. Posiada local variable type inference, tzn. kompilator jest w stanie wywnioskować typ deklaracji na podstawie przypisania.
+
+#!csharp
+
+int i = 3;
+
+#!csharp
+
+var i = 3;
+
+#!csharp
+
+var line = i.ToString(); // Variable line is a string.
+
+#!markdown
+
+Różne konwencje:
+- Nie używać `var` (głupie)
+- Używać `var` "gdy typ jest oczywisty"
+- Używać `var` zawsze, gdy można
+
+Dla celów dydaktycznych będę stosował konwencję 2 w tej prezentacji. Generalnie ludzkość doszła już do wniosku, że z reguły to kompilator powinien przejmować się wymyślaniem typów, dlatego w nowych językach, takich jak Rust, wszystkie deklaracje są implicitly typed by default.
+
+#!markdown
+
+<h3 id="p-tla--foreach-">1.5 Pętla `foreach`</h3> <small><a href="#toc">Back to top</a></small>
+
+Do iterowania się po tablicach, (dokładniej po `IEnumerable`, o którym później), w większości przypadków używa się pętli `foreach`.
+
+#!csharp
+
+int[] tab = new int[16];
+
+for (int i = 0; i < tab.Length; ++i)
+{
+    tab[i] = i;
+}
+
+foreach(var i in tab)
+{
+    Console.Write(i.ToString() + " ");
+}
+
+Console.WriteLine();
+
+#!markdown
+
+<h3 id="access-specifiers">1.6 Access specifiers</h3> <small><a href="#toc">Back to top</a></small>
+Zajmijmy się w końcu klasami. W C# mamy cztery access specifiery🙊.
+- `public` - widoczne wszędzie (jak w Javie)
+- `internal` - widoczne w obrębie tego assembly (podobne do package-private w Javie)
+- `protected` - widoczne dla mnie i wszystkiego, co po mnie dziedziczy (jak w Javie)
+- `private` - widoczne dla mnie i tylko dla mnie (jak w Javie)
+
+#!markdown
+
+<h3 id="fields">1.7 Fields</h3> <small><a href="#toc">Back to top</a></small>
+
+Pola wewnątrz klasy deklaruje się jak w Javie.
+
+#!csharp
+
+public class Duck
+{
+    private int _timesSqueaked = 0;
+    private readonly string _name;
+}
+
+#!markdown
+
+Pola mogą mieć domyślne wartości, tak jak wyżej.
+
+Mogą one mieć następujące modyfikatory 🙊.
+- `readonly` - to pole może być ustawione tylko przez domyślną wartość lub konstruktor
+- `const` - compile-time constant
+- `static` - pole statyczne, nieprzypisane do żadnej instancji
+
+Niestatyczne pola powinny być prywatne. Jak nie są prywatne, to pewnie coś poszło nie tak przy projektowaniu klasy.
+
+Popularną konwencją nazewnictwa (i zalecaną przez MSDN) jest pisanie prywatnych pól _camelCasem (zaczynanym od podłogi), aczkolwiek spotyka się też zwykły camelCase. Stałe piszemy PascalCasem.
+
+#!markdown
+
+<h3 id="properties">1.8 Properties</h3> <small><a href="#toc">Back to top</a></small>
+Skoro pola są prywatne, to potrzebujemy getterów i setterów.
+
+#!csharp
+
+private int _timesSqueaked = 0;
+
+public int TimesSqueaked
+{
+    get
+    {
+        return _timesSqueaked;
+    }
+    set
+    {
+        _timesSqueaked = value;
+    }
+}
+
+#!markdown
+
+Oczywiście tyle linii kodu to sroga przesada, ale da się to zbić używając expression bodies.
+
+#!csharp
+
+private int _timesSqueaked = 0;
+
+public int TimesSqueaked
+{
+    get => _timesSqueaked;
+    set => _timesSqueaked = value;
+}
+
+#!markdown
+
+Twórcy C# zauważyli, że po pierwsze, najczęściej nazwy property będą takie same jak ich odpowiadających pól (tylko wielką literą), a po drugie najczęściej getter i setter jest domyślny, get zwraca, set przypisuje. Dlatego da się napisać też tak:
+
+#!csharp
+
+public int TimesSqueaked { get; set; }
+
+#!markdown
+
+Oraz dodać domyślną wartość:
+
+#!csharp
+
+public int TimesSqueaked { get; set; } = 0;
+
+#!markdown
+
+Ta linijka jest równoważna tym wyżej. Możemy nawet nadać różne access specifiery:
+
+#!csharp
+
+public int TimesSqueaked { get; private set; } = 0;
+
+#!markdown
+
+Domyślnie jest taki sam jak samej property. Odwoływanie się do property jest bardzo proste:
+
+#!csharp
+
+public class Duck
+{
+    public int TimesSqueaked { get; set; }
+}
+
+var duck = new Duck();
+duck.TimesSqueaked = 42; // Calls the set method.
+Console.WriteLine(duck.TimesSqueaked); // Calls the get method.
+
+#!markdown
+
+Jeśli property ma tylko getter i jest on jednolinijkowy, można zastosować nawet bardziej zwięzłą notację:
+
+#!csharp
+
+public class Duck
+{
+    public int Sum { get; set; }
+    public int Number { get; set; }
+    public float AverageValue => (float) Sum / Number;
+}
+
+var duck = new Duck();
+duck.Sum = 42;
+duck.Number = 9;
+Console.WriteLine(duck.AverageValue);
+
+#!markdown
+
+<h3 id="metody">1.9 Metody</h3> <small><a href="#toc">Back to top</a></small>
+
+Jakie metody są, każdy widzi. Deklarujemy typ zwracany i przyjmowane argumenty. Do instancji, na której wywołano metodę, możemy się odwołać za pomocą `this`.
+
+#!csharp
+
+public class Duck
+{
+    public int TimesSqueaked { get; set; }
+
+    public void Squeak(string message)
+    {
+        Console.WriteLine("Squeak! " + message);
+        this.TimesSqueaked++;  // This `this` is actually redundant.
+    }
+}
+
+var duck = new Duck();
+Console.WriteLine(duck.TimesSqueaked);
+duck.Squeak("Hello, World!");
+Console.WriteLine(duck.TimesSqueaked);
+
+#!markdown
+
+Getter i setter property to pełnoprawne metody i mogą zawierać dowolną logikę. Konwencjonalnie jednak nie powinny być bardzo zasobożerne.
+
+#!csharp
+
+public class Duck
+{
+    private int _timesSqueaked;
+    public int TimesSqueaked 
+    { 
+        get => _timesSqueaked;
+        set => _timesSqueaked = Math.Max(value, 0); 
+    }
+}
+
+var duck = new Duck();
+duck.TimesSqueaked = 17;
+Console.WriteLine(duck.TimesSqueaked);
+duck.TimesSqueaked = -8;
+Console.WriteLine(duck.TimesSqueaked);
+
+#!markdown
+
+<h3 id="interfejsy">1.10 Interfejsy</h3> <small><a href="#toc">Back to top</a></small>
+
+Interfejsy mogą zawierać tylko deklaracje publicznych metod 🙊. Gettery i settery to metody:
+
+#!csharp
+
+public interface IDuck
+{
+   int TimesSqueaked { get; }
+   void Squeak();
+}
+
+#!markdown
+
+Klasa może implementować dowolnie wiele interfejsów. Aby implementować interfejs należy dostarczyć publiczne metody o podanych sygnaturach.
+
+#!csharp
+
+public class Duck : IDuck
+{
+    public int TimesSqueaked { get; }
+    public void Squeak() { }
+}
+
+#!markdown
+
+<h3 id="dziedziczenie">1.11 Dziedziczenie</h3> <small><a href="#toc">Back to top</a></small>
+
+Klasy mogą dziedziczyć po maksymalnie jednej innej klasie i implementować dowolnie wiele interfejsów. Klasy dziedziczą wszystkie metody, pola etc.
+Każda klasa dziedziczy domyślnie po `System.Object`.
+
+#!csharp
+
+public class Duck
+{
+    public void Squeak() => Console.WriteLine("Squeak!");
+}
+
+public class BetterDuck : Duck
+{
+}
+
+BetterDuck duck = new BetterDuck();
+duck.Squeak();
+
+#!markdown
+
+<h3 id="przeci--anie">1.12 Przeciążanie</h3> <small><a href="#toc">Back to top</a></small>
+
+Metody można przeciążać, t.j. deklarować dwie metody o tej samej nazwie, ale z innymi parametrami i/lub z innym typem zwracanym. Kompilator wybierze najlepiej pasującą metodę at compile time.
+
+#!csharp
+
+public void SqueakADuck(Duck duck) => 
+    Console.WriteLine("Squeak!");
+
+public void SqueakADuck(BetterDuck duck) => 
+    Console.WriteLine("Better squeak!");
+
+Duck duck = new Duck();
+BetterDuck betterDuck = new BetterDuck();
+Duck betterDuckDisguisedAsANormalDuck = new BetterDuck();
+
+SqueakADuck(duck);
+SqueakADuck(betterDuck);
+SqueakADuck(betterDuckDisguisedAsANormalDuck);
+
+#!markdown
+
+<h3 id="prze-adowywanie--overriding-">1.13 Przeładowywanie (overriding)</h3> <small><a href="#toc">Back to top</a></small>
+
+Metody można przeładowywać (override'ować), ale tylko jeśli w klasie bazowej były zadeklarowane jako `virtual`. Trzeba to zaznaczyć za pomocą `override`. Oczywiście mamy polimorfizm.
+
+#!csharp
+
+public class Duck
+{
+    public virtual void Squeak() =>
+        Console.WriteLine("Squeak!");
+}
+
+public class BetterDuck : Duck
+{
+    public override void Squeak() =>
+        Console.WriteLine("Better squeak!");
+}
+
+Duck duck = new Duck();
+BetterDuck betterDuck = new BetterDuck();
+Duck betterDuckDisguisedAsANormalDuck = new BetterDuck();
+
+duck.Squeak();
+betterDuck.Squeak();
+betterDuckDisguisedAsANormalDuck.Squeak();
+
+#!markdown
+
+Może się zdarzyć, że chcemy wywołać implementację z klasy bazowej. Służy do tego keyword `base`.
+
+#!csharp
+
+public class BetterDuck : Duck
+{
+    public override void Squeak()
+    {
+        Console.WriteLine("Better squeak!");
+        base.Squeak();
+    }
+}
+
+var betterDuck = new BetterDuck();
+betterDuck.Squeak();
+
+#!markdown
+
+<h3 id="konstruktory">1.14 Konstruktory</h3> <small><a href="#toc">Back to top</a></small>
+
+W skrócie ctor, służy do tworzenia obiektów klasy za pomocą `new`.
+
+#!csharp
+
+public class Duck
+{
+    public string Name { get; }
+    
+    public Duck(string name) => Name = name;
+}
+
+var duck = new Duck("Jacuś");
+
+Console.WriteLine(duck.Name);
+
+#!markdown
+
+Jeśli nie podamy żadnego, C# stworzy dla nas domyślny:
+
+#!csharp
+
+public class Duck
+{
+    public Duck() : base()
+    {
+    }
+}
+
+#!markdown
+
+Konstruktor podklasy musi wywołać jakiś konstruktor klasy bazowej, domyślnie bezparametrowy.
+Możemy też wywołać inny konstruktor z konstruktora za pomocą `this`.
+
+#!csharp
+
+public class Duck
+{
+    public string Name { get; }
+
+    public Duck() : this("Jacuś")
+    {
+    }
+
+    public Duck(string name) => Name = name;
+}
+
+var defaultDuck = new Duck();
+var piotruśDuck = new Duck("Piotruś");
+
+Console.WriteLine(defaultDuck.Name);
+Console.WriteLine(piotruśDuck.Name);
+
+#!markdown
+
+Jeśli mamy bezparametrowy ctor i settery, możemy zainicjować obiekt przy konstrukcji.
+
+#!csharp
+
+public class Duck
+{
+    public string Name { get; set; }
+    public string Color { get; set; }
+}
+
+var duck = new Duck { Name = "Jacuś", Color = "Yellow" };
+
+Console.WriteLine(duck.Name);
+Console.WriteLine(duck.Color);
+
+#!markdown
+
+<h3 id="keyword--init-">1.15 Keyword `init`</h3> <small><a href="#toc">Back to top</a></small>
+
+Idiom z inicjowaniem pól przy konstrukcji jest bardzo przydatny, na tyle, że istnieje specjalny keyword, który reprezentuje setter dostępny jedynie przy konstrukcji.
+
+#!csharp
+
+public class Duck
+{
+    public string Name { get; init; }
+    public string Color { get; init; } = "Yellow";
+
+    public Duck(string name) => 
+	      Name = name; // `init` can be called in constructor
+}
+
+// `init` can be called during initialization.
+var duck = new Duck("Jacuś") { Color = "Green" };
+
+Console.WriteLine(duck.Name);
+Console.WriteLine(duck.Color);
+
+#!csharp
+
+// This is an error.
+duck.Name = "Piotruś";
+
+#!markdown
+
+<h3 id="sealed">1.16 Sealed</h3> <small><a href="#toc">Back to top</a></small>
+Klasy możemy zamknąć na dziedziczenie poprzez keyword `sealed`. Można też nim zablokować dalsze przeładowywanie metody wirtualnej.
+
+#!csharp
+
+public sealed class Duck
+{
+}
+
+// This is an error.
+public class BetterDuck : Duck
+{
+}
+
+#!markdown
+
+Większość klas powinna być `sealed`.
+
+#!markdown
+
+<h3 id="klasy-abstrakcyjne">1.17 Klasy abstrakcyjne</h3> <small><a href="#toc">Back to top</a></small>
+
+Klasy abstrakcyjne służą do implementacji części interfejsu i pozostawienia pewnych szczegółów dla implementujących klasy dziedziczące. Mogą posiadać metody bez implementacji. Klasa abstrakcyjna nie może zostać zainstancjonowana, ale może mieć konstruktor.
+
+#!csharp
+
+public abstract class DuckBase
+{
+    public int TimesSqueaked { get; private set; } = 0;
+    
+    public DuckBase() =>
+        Console.WriteLine("Duck base created!");
+
+    public void Squeak()
+    {
+        ProcessSqueak();
+        ++TimesSqueaked;
+    }
+    
+    protected abstract void ProcessSqueak();
+}
+
+public sealed class Duck : DuckBase
+{
+    public Duck() : base() =>
+        Console.WriteLine("Duck created!");
+
+    protected override void ProcessSqueak() =>
+        Console.WriteLine("Squeak!");
+}
+
+var duck = new Duck();
+duck.Squeak();
+Console.WriteLine(duck.TimesSqueaked);
+
+#!markdown
+
+<h3 id="enums">1.18 Enums</h3> <small><a href="#toc">Back to top</a></small>
+
+Enumy w C# są jednym ze słabych punktów języka.
+
+#!csharp
+
+public enum Color 
+{
+    Red,
+    Yellow,
+    Green,
+    Blue,
+    Black
+}
+
+var color = Color.Red;
+
+#!markdown
+
+Enum jest tak naprawdę zmienną typu `int` przebraną za enum.
+
+#!csharp
+
+public enum Color
+{
+   Red = 1,
+   Yellow = 2,
+   Green = 4,
+   Blue = 8,
+   Black = 16,
+   Purple = 32,
+}
+
+var mix = Color.Red | Color.Yellow | Color.Black;
+Console.WriteLine((int)mix);
+
+#!markdown
+
+<h3 id="reference-types-vs-value-types">1.19 Reference types vs Value types</h3> <small><a href="#toc">Back to top</a></small>
+
+W C# istnieje też keyword `struct` służący do tworzenia nowych typów. W przeciwieństwie do C++ różnica pomiędzy `class` a `struct` istnieje i jest znaczna. Klasy reprezentują reference types, structy value types.
+
+- **Reference type** - instancja tego typu zawiera referencję (wskaźnik) na blok pamięci zawierający dane obiektu; przekazanie takiej instancji np. jako parametr funkcji i zmodyfikowanie w niej czegoś poskutkuje zmianą oryginalnego obiektu
+
+#!csharp
+
+public void SqueakADuck(Duck duck)
+{
+    duck.Squeak();
+}
+
+var duck = new Duck();
+
+SqueakADuck(duck);
+
+Console.WriteLine(duck.TimesSqueaked);
+
+#!markdown
+
+- **Value type** - obiekty tego typu są _zawsze_ kopiowane przez wartość; wszystkie typy wbudowane poza `object` i `string` są Value types
+
+#!csharp
+
+public struct DuckData
+{
+    public string Name { get; }
+    public Color Color { get; }
+    
+    public DuckData(string name, Color color)
+    {
+        Name = name;
+        Color = color;
+    }
+}
+
+
+var duckData = new DuckData("Jacuś", Color.Yellow);
+
+#!markdown
+
+Odwołanie się do value type _zawsze_,  **zawsze** zwraca kopię. Z tego powodu Value types zawsze powinny być immutable.
+
+#!csharp
+
+public struct MutableStruct
+{
+    public int Value { get; set; }
+}
+
+public void Mutate(MutableStruct x)
+{
+    Console.WriteLine($"Inside Mutate: {x.Value}");
+    x.Value += 1;
+    Console.WriteLine($"On Mutate return: {x.Value}");
+}
+
+var x = new MutableStruct { Value = 42 };
+
+Console.WriteLine($"Before Mutate call: {x.Value}");
+Mutate(x);
+Console.WriteLine($"After Mutate call: {x.Value}");
+
+#!markdown
+
+Istnieje przydatny keyword, którego możemy użyć, aby to zapewnić: `readonly`. Zadeklarowanie structa jako `readonly` daje gwarancję, że będzie immutable.
+
+#!csharp
+
+public readonly struct MutableStruct
+{
+    // The setter causes an error.
+    public int Value { get; set; }
+}
+
+#!csharp
+
+public readonly struct MutableStruct
+{
+    // Using init is OK.
+    public int Value { get; init; }
+}
+
+#!markdown
+
+Wszystkie keywordy `int`, `object`, `string` itp. są tak naprawdę jedynie aliasami na typy `struct System.Int32`, `class System.Object`, `class System.String`.
+
+Domyślną wartością reference type jest `null`,  domyślną wartością value type są wyzerowane bity. Value types nie mogą mieć bezparametrowych ctorów (mają domyślny). Value types nie mogą po niczym dziedziczyć (ani nie można dziedziczyć po nich), ale mogą implementować interfejsy.
+
+#!markdown
+
+<h3 id="nullability">1.20 Nullability</h3> <small><a href="#toc">Back to top</a></small>
+
+C# od początku istnienia działał tak jak Java: referencje zawsze można ustawić na `null`.
+
+#!csharp
+
+Duck duck = null;
+
+#!markdown
+
+Z kolei structy nie mogą być `null`.
+
+#!csharp
+
+DuckData data = null; // Does not compile.
+
+#!markdown
+
+Istnieje specjalna składnia dla value types, która pozwala zmienić je w nullable:
+
+#!csharp
+
+void PrintName(DuckData? data)
+{
+    if (data.HasValue)
+    {
+        Console.WriteLine(data.Value.Name);
+    }
+    else 
+    {
+        Console.WriteLine("null");
+    }
+}
+
+DuckData? nullData = null;
+DuckData? nonNullData = new DuckData("Jacuś", Color.Yellow);
+
+PrintName(nullData);
+PrintName(nonNullData);
+
+#!markdown
+
+Pod spodem `DuckData?` to tak naprawdę `Nullable<DuckData>`, które zawiera po prostu dodatkową flagę `bool` mówiącą, czy wartość jest `null`em.
+
+Od .NET-a 5 mamy też nullable reference types. Domyślnie linijka
+
+#!csharp
+
+#nullable enable
+
+Duck duck = null;
+
+#!markdown
+
+rzuci warning, że przypisujemy `null` na not-nullable reference type. Żeby się go pozbyć, trzeba zadeklarować zmienną jako nullable:
+
+#!csharp
+
+#nullable enable
+
+Duck? duck = null;
+
+#!markdown
+
+W przeciwieństwie do structów jest to jedynie anotacja dla kompilatora. Powie nam np., że
+
+#!csharp
+
+#nullable enable
+
+void SqueakAPotentiallyNullDuck(Duck? duck)
+{
+    duck.Squeak();
+}
+
+#!markdown
+
+jest niebezpieczne: `duck` jest nullable i nie sprawdziliśmy, czy nie jest `null`em. Poprawnym postępowaniem w takim przypadku jest, cóż, sprawdzenie tego:
+
+#!csharp
+
+#nullable enable
+
+void SqueakAPotentiallyNullDuck(Duck? duck)
+{
+    if (duck is not null)
+    {
+        duck.Squeak();
+    }
+}
+
+#!markdown
+
+ Można taki warning też zignorować bang operatorem:
+
+#!csharp
+
+#nullable enable
+
+void SqueakAPotentiallyNullDuck(Duck? duck)
+{
+    duck!.Squeak();
+}
+
+#!markdown
+
+Niestety w notebookach Nullable Reference Types (tak się nazywa ten ficzer) są wyłączone by default i nie da się ich globalnie włączyć, dlatego będziemy robić to ręcznie używając `#nullable enable`. Swoją drogą, da się też NRE wyłączyć na dany fragment kodu:
+
+#!csharp
+
+#nullable enable
+
+
+#nullable disable
+void SqueakAPotentiallyNullDuck(Duck? duck)
+{
+    duck.Squeak();
+}
+#nullable restore
+
+#!markdown
+
+<h3 id="parametry--ref--i--out-">1.21 Parametry `ref` i `out`</h3> <small><a href="#toc">Back to top</a></small>
+
+C# pozwala na mało eleganckie przekazywanie zmiennych przez referencję. Można więc przekazać referencję na referencję lub referencję na value type.
+
+#!csharp
+
+public class Duck { }
+
+public void Nullify(ref Duck duck)
+{
+    duck = null;
+}
+
+public void Zero(ref int i)
+{
+    i = 0;
+}
+
+public void Set(out int i)
+{
+    i = 42;
+}
+
+var duck = new Duck();
+var i = 42;
+
+Nullify(ref duck);
+Console.WriteLine(duck == null ? "Null" : "Not null");
+
+Zero(ref i);
+Console.WriteLine(i);
+
+int j;
+Set(out j);
+Console.WriteLine(j);
+
+#!markdown
+
+Różnica między `ref` a `out` - `ref` musi być przypisany przed przekazaniem, `out` nie. Metoda musi przypisać coś do `out`, do `ref` nie.
+
+#!markdown
+
+<h3 id="r-wno--">1.22 Równość</h3> <small><a href="#toc">Back to top</a></small>
+
+Istnieje metoda `static bool Object.ReferenceEquals(object, object)`, która sprawdza, czy przekazane obiekty są tym samym.
+
+Istnieje metoda `bool Object.Equals(object)`, którą dziedziczą wszystkie typy. Domyślnie porównanie za pomocą `Equals` jest równoważne `ReferenceEquals` dla reference types, a dla value types porównuje każdy bit. Da się ją przeciążyć.
+
+Domyślnie porównanie za pomocą operatora `==` jest równoważna `ReferenceEquals` dla reference types i jest niezdefiniowany dla value types. Da się go przeciążyć.
+Wszystkie wbudowane value types mają przeciążone `==` na równoważne `Equals`. 
+
+**Wyjątkowo `string` również przeciąża `==` i porównuje wartości!**
+
+Przy przeciążaniu `Equals` powinno się przeciążać też `int Object.GetHashCode()`. Poniżej idiomatyczna implementacja `Equals`.
+
+#!csharp
+
+public class Duck : IEquatable<Duck>
+{
+    public string Name { get; }
+    public Color Color { get; }
+
+    public Duck(string name, Color color)
+    {
+        Name = name;
+        Color = color;
+    }
+
+    public override int GetHashCode() =>
+        HashCode.Combine(Name, Color);
+
+    public bool Equals(Duck other) => 
+        // Strings can be compared with == and it behaves as expected.
+        Name == other.Name && Color == other.Color;
+
+    public override bool Equals(object obj) =>
+	      obj is Duck other && other.Equals(obj);
+}
+
+var jacuś = new Duck("Jacuś", Color.Yellow);
+var piotruś = new Duck("Piotruś", Color.Yellow);
+var jacuś2 = new Duck("Jacuś", Color.Yellow);
+
+Console.WriteLine(object.ReferenceEquals(jacuś, piotruś));
+Console.WriteLine(object.ReferenceEquals(jacuś, jacuś2));
+Console.WriteLine(jacuś.Equals(piotruś));
+Console.WriteLine(jacuś.Equals(jacuś2));
+
+#!markdown
+
+<h3 id="parse-i-tryparse">1.23 Parse i TryParse</h3> <small><a href="#toc">Back to top</a></small>
+
+Do konwersji stringów na liczby używa się funkcji `Parse` lub `TryParse`.  Ta pierwsza rzuca wyjątek przy niepowodzeniu, ta druga zwraca `boola` i wypełnia `out` parameter jeśli się udało.
+
+#!csharp
+
+int i = int.Parse("42");
+Console.WriteLine(i);
+
+#!csharp
+
+int j;
+bool success = int.TryParse("42", out j);
+Console.WriteLine(success);
+Console.WriteLine(j);
+
+#!markdown
+
+Można też olać `out` parameter (nie tylko w `TryParse`, tak ogólnie) i dostać tylko `boola`.
+
+#!csharp
+
+var success = int.TryParse("42", out _);
+Console.WriteLine(success);
+
+#!markdown
+
+`bool TryX(out T t)` jest dość częstym patternem w C#.
+
+#!markdown
+
+<h3 id="generics">1.24 Generics</h3> <small><a href="#toc">Back to top</a></small>
+
+Generyczne mogą być zarówno typy jak i metody. Przykładem generycznej klasy jest np. `List<T>`, który może przechowywać dowolne obiekty. W przeciwieństwie do pewnego języka na J, informacja o typie zostaje zachowana at runtime.
+
+#!csharp
+
+public class Duck { }
+public class BetterDuck : Duck { }
+
+public static void PrintDuckType<TDuck>(TDuck duck)
+{
+    var genericArgumentName = typeof(TDuck).Name;
+    var actualTypeName = duck.GetType().Name;
+    Console.WriteLine("I was passed a " + actualTypeName + " as a " + genericArgumentName + ".");
+}
+
+var duck = new Duck();
+var betterDuck = new BetterDuck();
+Duck betterDuckDisguisedAsADuck = new BetterDuck();
+
+PrintDuckType(duck);
+PrintDuckType(betterDuck);
+PrintDuckType(betterDuckDisguisedAsADuck);
+
+#!csharp
+
+public class A { }
+public class B<T> : A { }
+public class C : B<int> { }
+public class D<T, U> : B<T>
+
+#!markdown
+
+Generyki z C# są stricte lepsze niż te z Javy, ale nie są Turing complete jak te z C++. Prawdopodobnie największym ograniczeniem jest brak variadic generics.
+
+#!markdown
+
+<h3 id="generic-constraints">1.25 Generic constraints</h3> <small><a href="#toc">Back to top</a></small>
+
+Umożliwianie przekazania dowolnego typu do generycznej klasy lub metody z reguły jest mało przydatne. Można jednak nałożyć ograniczenia na typ generyczny - kazać mu implementować jakieś interfejsy lub dziedziczyć po konkretnej klasie.
+
+#!csharp
+
+public interface IDuck
+{
+    void Squeak();
+}
+
+public interface ISqueakTracker
+{
+   int TimesSqueaked { get; }
+}
+
+public class Duck : IDuck, ISqueakTracker
+{
+    public int TimesSqueaked { get; protected set; } = 0;
+    
+    public virtual void Squeak()
+    {
+        Console.WriteLine("Squeak!");
+        ++TimesSqueaked;
+    }
+}
+
+public static void SqueakIfNew<TDuck>(TDuck duck) 
+    where TDuck : IDuck, ISqueakTracker
+{
+    if(duck.TimesSqueaked > 0)  // ISqueakTracker
+    {
+        Console.WriteLine("No squeaking for you!");
+        return;
+    }
+    
+    duck.Squeak();  // IDuck
+}
+
+var duck = new Duck();
+SqueakIfNew(duck);
+SqueakIfNew(duck);
+
+#!markdown
+
+Istnieją też inne, specjalne ograniczenia:
+- `where T : class` - `T` musi być typem referencyjnym;
+- `where T : struct` - `T` musi być value typem;
+- `where T : new()` - `T` musi mieć dostępny, bezparametrowy ctor
+
+Jeśli nadajemy ograniczenia na dwa typy to piszemy drugie `where`.
+
+#!csharp
+
+public class A<T, U> where T : class, new()
+                     where U : T
+{
+}
+
+#!markdown
+
+C# nie ma dziwnych ograniczeń na używanie generyków jak Java, parametrem generycznym może być dowolny typ. Nie jest jednak tak szalony jak C++, więc z reguły da się zrozumieć o co chodzi.
+
+#!markdown
+
+<h3 id="kolekcje">1.26 Kolekcje</h3> <small><a href="#toc">Back to top</a></small>
+
+.NET udostępnia generyczne kolekcje i interfejsy w `System.Collections.Generic`.
+
+**Intefejsy**:
+- `IEnumerable<T>` - cokolwiek, po czym można się przeiterować, korzysta z tego `foreach`;
+- `ICollection<T>` - dziedziczy po `IEnumerable<T>`, udostępnia operacje `Add(T)`, `Remove(T)`, `Contains(T)` i property `Count`;
+- `IList<T>` - dziedziczy po `ICollection<T>`, udostępnia indeksator `[]`;
+- `IDictionary<TKey, TValue>` - dziedziczy po `ICollection<KeyValuePair<TKey, TValue>>`,  udostępnia dodawanie par klucz-wartość i odwoływanie się po kluczu przez indeksator.
+
+**Klasy**:
+- `List<T>` - implementuje `IList<T>`, rozszerzalna tablica tak jak `std::vector<T>` z C++;
+- `Dictionary<TKey, TValue>` - implementuje `IDictionary<TKey, TValue>`, hashmapa;
+- `Stack<T>` - stos;
+- `Queue<T>` - kolejka FIFO;
+- `LinkedList<T>` - lista dwukierunkowa;
+- `HashSet<T>` - zgaduj-zgadula;
+- `SortedDictionary<TKey, TValue`, `SortedSet<T>` - odpowiedniki `Dictionary` i `HashSet` na drzewach BST;
+- `SortedList<TKey, TValue>` - posortowana lista (taka ze wstawianiem w $\mathcal{O}(n)$)
+- `Lookup<TKey, TValue>` - słownik, ale do każdego klucza może być wiele wartości
+
+Lista jest najpowszechniejszą z kolekcji. Do iterowania się po kolekcjach w $90\%$ przypadków używamy `foreacha`. Do inicjalizowania kolekcji wygodnie użyć...  no cóż, inicjalizatora kolekcji.
+
+#!csharp
+
+var list = new List<int> { 2, 1, 3, 7 };
+
+foreach(var num in list)
+{
+    Console.Write(num);
+}
+Console.WriteLine();
+
+#!markdown
+
+<h3 id="stringi">1.27 Stringi</h3> <small><a href="#toc">Back to top</a></small>
+
+Wspomnieliśmy już, że porównywanie zmiennych typu `string` za pomocą `==` jest intuicyjne. Należy pamiętać także o bardzo ważnej rzeczy - stringi są immutable. To znaczy, że wywołanie:
+
+#!csharp
+
+var str = "Hello";
+str += " World!";
+
+#!markdown
+
+spowoduje stworzenie zupełnie nowego stringa `"Hello World!"` i przypisanie go do zmiennej `str`. Więc gdyby chcieć np. stworzyć z ciągu zer i jedynek napis składający się z liter `a` i `b` w taki sposób:
+
+#!csharp
+
+string ToABString(int[] sequence)
+{
+    var result = "";
+    
+    foreach(var element in sequence)
+    {
+        result += (element == 0 ? "a" : "b");
+    }
+    
+    return result;
+}
+
+var abString = ToABString(new [] {0, 1, 0, 0, 1, 1});
+Console.WriteLine(abString);
+
+#!markdown
+
+to złożoność czasowa i pamięciowa wyniesie $\mathcal{O}($`sequence.Length`$^2)$. Do takich kosztownych operacji służy klasa `StringBuilder`.
+
+#!csharp
+
+string ToABString(int[] sequence)
+{
+    var stringBuilder = new StringBuilder();
+    
+    foreach(var element in sequence)
+    {
+        stringBuilder.Append(element == 0 ? 'a' : 'b');
+    }
+    
+    return stringBuilder.ToString();
+}
+
+var abString = ToABString(new [] {0, 1, 0, 0, 1, 1});
+Console.WriteLine(abString);
+
+#!markdown
+
+Stringi też występują w różnych smakach. Mamy zwykłe, interpolowane i verbatim.
+- **Interpolated string** - pozwala na wplecenie wartości zmiennych do literału
+
+#!csharp
+
+public class Duck
+{
+    public string Name { get; } 
+    public int TimesSqueaked { get; private set; } = 0;
+
+    public Duck(string name)
+    {
+        Name = name;
+    }
+
+    public void Squeak()
+    {
+        ++TimesSqueaked;
+        Console.WriteLine($"Duck {Name}: Squeak! [Squeak #{TimesSqueaked}]");
+    }
+}
+
+var duck = new Duck("Jacuś");
+duck.Squeak();
+duck.Squeak();
+
+#!markdown
+
+Jest to "mniej więcej równoważne" napisaniu
+
+#!csharp
+
+Console.WriteLine("Duck " + Name + ": Squeak! [Squeak #" + TimesSqueaked + "]");
+
+#!markdown
+
+A dla ścisłości jest dokładnie równoważne
+
+#!csharp
+
+string.Format("Duck {0}: Squeak! [Squeak #{1}]", Name, TimesSqueaked);
+
+#!markdown
+
+- **Verbatim string** - pozwala na dosłowne interpretowanie stringa
+
+#!csharp
+
+var str = "\n";
+var verbatimStr = @"\n";
+
+Console.WriteLine(str);
+Console.WriteLine(verbatimStr);
+
+#!markdown
+
+Można te typy łączyć ze sobą
+
+#!csharp
+
+var duck = new Duck("Jacuś");
+var mix = $@"{duck.Name}\n";
+Console.WriteLine(mix);
+
+#!markdown
+
+<h3 id="statyczne-klasy">1.28 Statyczne klasy</h3> <small><a href="#toc">Back to top</a></small>
+
+Czasami metody albo stałe nie należą do żadnej konkretnej instancji, ale są ogólną własnością klasy. Deklarujemy je wtedy jako `static`. Często jednak zdarza się, że mamy wiele pomocniczych metod, które nijak nie są związane z konkretnym obiektem (np. klasa `Math`). Wtedy taką klasę można zadeklarować jako statyczną. Nie może mieć ona ctora  i nie da się stworzyć jej instancji. Wszystkie jej składowe też muszą być statyczne.
+
+#!csharp
+
+public static class Math
+{
+    public const double E = 2.7182818284590452354;
+    public const double Pi = 3.14159265358979323846;
+
+    public static double Max(double val1, double val2) => (val1 >= val2) ? val1 : val2;
+}
+
+Console.WriteLine(Math.Max(Math.E, Math.Pi));
+
+#!markdown
+
+<h3 id="extension-methods">1.29 Extension methods</h3> <small><a href="#toc">Back to top</a></small>
+
+Bardzo ciekawym mechanizmem języka są extension methods. Jest to co prawda jedynie lukier syntaktyczny, ale pozwala nam wywoływać metody na obiektach danego typu jakby były ich memberami.
+
+#!csharp
+
+public static class DuckExtensions
+{
+    public static void SqueakNTimes(this Duck duck, int n)
+    {
+        for(var i = 0; i < n; ++i)
+        {
+            duck.Squeak();
+        }
+    }
+}
+
+var duck = new Duck("Jacuś");
+
+duck.SqueakNTimes(3);
+
+#!markdown
+
+Nie działa w notebookach niestety, bo nie może być to zagnieżdżona klasa :/
+
+#!markdown
+
+Nie można w ten sposób obejść access specifierów - widzimy tylko publiczne rzeczy (ewentualnie `internal`). Jest to "tylko" lukier syntaktyczny, ale jakże przydatny!
+
+#!markdown
+
+<h3 id="operatory">1.30 Operatory</h3> <small><a href="#toc">Back to top</a></small>
+
+W C# mamy standardowe operatory jak w C lub C++. Przydatną informacją jest to, że operatory `||` oraz `&&` są leniwe (defacto są zaimplementowane za pomocą `|` i `&`). W przypadku `bool?` zachowanie tych operatorów jest takie jak w SQL-u (stety/niestety).
+
+C# ma też tzw. null-coalescing operator `??
+
+#!csharp
+
+a ?? b;
+
+#!markdown
+
+jest równoważne
+
+#!csharp
+
+a != null ? a : b;
+
+#!csharp
+
+int? a = 37;
+int? b = 42;
+int? c = null;
+
+Console.WriteLine(a ?? b);
+Console.WriteLine(c ?? b);
+
+#!markdown
+
+Oraz operator `?.`
+
+#!csharp
+
+a?.Property;
+
+#!markdown
+
+jest równoważne
+
+#!csharp
+
+a != null ? a.Property : null;
+
+#!csharp
+
+#nullable enable
+
+Duck? duck = new Duck("Jacuś");
+Duck? nullDuck = null;
+
+string StringCoalesce(string? s) => s ?? "null";
+
+Console.WriteLine(StringCoalesce(duck?.Name));
+Console.WriteLine(StringCoalesce(nullDuck?.Name));
+
+#!csharp
+
+#nullable enable
+
+Console.WriteLine(StringCoalesce(nullDuck.Name));
+
+#!markdown
+
+<h3 id="rzutowanie">1.31 Rzutowanie</h3> <small><a href="#toc">Back to top</a></small>
+- Casty, przy których nie ma ryzyka utraty informacji są implicit.
+
+#!csharp
+
+int a = 42;
+long b = a;  // Implicit cast.
+
+#!markdown
+
+- Cast może być explicit at compile time, wtedy zawsze się udaje albo nie kompiluje.
+
+#!csharp
+
+public class Duck 
+{ 
+    public void Squeak() => Console.WriteLine("Squeak!");
+}
+public class BetterDuck : Duck 
+{ 
+    public void BetterSqueak() => Console.WriteLine("Better squeak!");
+}
+
+var betterDuck = new BetterDuck();
+var duck = (Duck)betterDuck;
+
+#!markdown
+
+- Cast może być explicit at runtime, wtedy może rzucić `InvalidCastException`.
+
+#!csharp
+
+var duck = new Duck();
+var betterDuck = (BetterDuck)duck; // Throws at runtime.
+
+#!csharp
+
+Duck duck = new BetterDuck();
+var betterDuck = (BetterDuck)duck; // Succeeds at runtime.
+
+#!markdown
+
+- Cast może być safe at runtime z użyciem `as` lub `is`.
+
+#!csharp
+
+var duck = new Duck();
+var betterDuck = duck as BetterDuck; // Fails, betterDuck == null.
+
+if (betterDuck is null)
+{
+    Console.WriteLine("Failed");
+}
+else
+{
+    Console.WriteLine("Succeeded");
+}
+
+#!csharp
+
+Duck duck = new BetterDuck();
+var betterDuck = duck as BetterDuck; // Succeeds, duck == betterDuck.
+
+if (betterDuck is null)
+{
+    Console.WriteLine("Failed");
+}
+else
+{
+    Console.WriteLine("Succeeded");
+}
+
+#!csharp
+
+Duck duck = new BetterDuck();
+if(duck is BetterDuck)
+{
+    Console.WriteLine("Success!");
+}
+
+#!csharp
+
+Duck duck = new BetterDuck();
+BetterDuck betterDuck = duck as BetterDuck;
+if(betterDuck is not null)
+{
+    betterDuck.Squeak();
+}
+
+#!markdown
+
+To samo, tylko zwięźlej:
+
+#!csharp
+
+Duck duck = new BetterDuck();
+if(duck is BetterDuck betterDuck)
+{
+    betterDuck.BetterSqueak();
+}
+
+#!markdown
+
+<h3 id="boxing">1.32 Boxing</h3> <small><a href="#toc">Back to top</a></small>
+Przy takim przypisaniu:
+
+#!csharp
+
+int i = 42;
+object obj = i;
+
+#!markdown
+
+następuje boxing, czyli opakowanie value type w reference type. Operacja odwrotna to unboxing:
+
+#!csharp
+
+int j = (int)obj;
+
+#!markdown
+
+Boxing zżera czas (dokładniej to a lot of boxing = a lot of garbage collection, which is expensive), więc należy go unikać, jeśli to możliwe.
+
+#!markdown
+
+<h3 id="przeci--anie-operator-w">1.33 Przeciążanie operatorów</h3> <small><a href="#toc">Back to top</a></small>
+
+Tak, można! Nie można tylko przypisania i `||`/`&&` (ale można `|`/`&`). Można nawet przeciążyć `==`, choć jest to niezalecane. Porównania muszą być przeciążane parami.
+
+#!csharp
+
+public class Duck
+{
+    public string Name { get; }
+
+    public Duck(string name)
+    {
+        Name = name;
+    }
+
+    public static bool operator ==(Duck duck1, Duck duck2) => duck1?.Name == duck2?.Name;
+
+    public static bool operator !=(Duck duck1, Duck duck2) => !(duck1 == duck2);
+}
+var duck = new Duck("Jacuś");
+var otherDuck = new Duck("Jacuś");
+
+Console.WriteLine(object.ReferenceEquals(duck, otherDuck));
+Console.WriteLine(duck == otherDuck);
+
+#!markdown
+
+Przeciążanie `==` bez `Equals` jest dość głupie, stąd nawet kompilator daje nam warning z tego powodu.
+
+#!markdown
+
+<h3 id="indekser">1.34 Indekser</h3> <small><a href="#toc">Back to top</a></small>
+
+Nasz typ może definiować swój indekser, tj. zachowanie dla operatora `[]`.
+
+#!csharp
+
+public class MyTableWrapper<T>
+{
+    private readonly T[] _tab;
+
+    public MyTableWrapper(int length)
+    {
+        _tab = new T[length];
+    }
+    
+    public T this[int i]
+    {
+        get => _tab[i];
+        set => _tab[i] = value;
+    }
+}
+
+var wrapper = new MyTableWrapper<int>(10);
+
+wrapper[3] = 42;
+wrapper[6] = 37;
+
+for (var i = 0; i < 10; i += 1)
+{
+    Console.WriteLine(wrapper[i]);
+}
+
+#!markdown
+
+<h3 id="tuples--valuetuple-">1.35 Tuples (ValueTuple)</h3> <small><a href="#toc">Back to top</a></small>
+
+Wspomnieliśmy wcześniej o Tuple'ach, jednak w C# 7 używa się ValueTuples. Pozwalają one na nazwanie pól:
+
+#!csharp
+
+var myPoint = (x: 4, y: 2);
+Console.WriteLine(myPoint.x);
+Console.WriteLine(myPoint.y);
+
+#!markdown
+
+Takie tuple można też dekonstruować w miejscu:
+
+#!csharp
+
+var (x, y) = myPoint;
+Console.WriteLine(x);
+Console.WriteLine(y);
+
+#!markdown
+
+ValueTuple to struct.
+
+#!markdown
+
+<h3 id="wyj-tki">1.36 Wyjątki</h3> <small><a href="#toc">Back to top</a></small>
+
+Wyjątki rzuca się `throw`, każdy wyjątek musi dziedziczyć po `System.Exception`. Wyjątki łapie się konstrukcją `try`/`catch` i można je zrethrowować. 
+
+#!csharp
+
+try
+{
+    /* ... */
+}
+catch(InvalidOperationException exception)
+{
+    Console.WriteLine(exception.Message);
+    throw;
+}
+
+#!markdown
+
+Jeśli nie obchodzi nas jaki wyjątek łapiemy (rzadko), piszemy:
+
+#!csharp
+
+try
+{
+    /* ... */
+}
+catch
+{
+   /* ... */
+}
+
+#!markdown
+
+jeśli nie potrzebujemy obiektu wyjątku, możemy napisać
+
+#!csharp
+
+try
+{
+    /* ... */
+}
+catch(InvalidOperationException) // Without declaring a variable.
+{
+    /* ... */
+}
+
+#!markdown
+
+C# ma też konstrukcję `finally`. Kod w bloku `finally` wywołuje się zawsze, nawet w przypadku wyjątku. Może wystąpić bez `catcha`.
+
+#!markdown
+
+<h3 id="garbage-collector">1.37 Garbage collector</h3> <small><a href="#toc">Back to top</a></small>
+
+Nie będziemy wchodzić w szczegóły GC. Najważniejsze informacje to:
+
+- Wszystkie obiekty na stercie, do których nie istnieje ścieżka w grafie obiektów są niekatywne.
+- GC od czasu do czasu przechodzi się po stercie i usuwa nieaktywne obiekty. Cały proces jest skomplikowany 🙊.
+- Value types są **zazwyczaj** alokowane na stosie. Wyjątki to między innymi pola klas i rzeczy złapane przez delegaty.
+
+#!markdown
+
+<h3 id="dispose">1.38 Dispose</h3> <small><a href="#toc">Back to top</a></small>
+
+Jeśli klasa trzyma jakiś managed resource, który jest "ciężki", np. file handle, połączenie z bazą danych itp., powinien implementować `IDisposable`. Interfejs ten zawiera jedną metodę `void Dispose()`, która ma zwolnić zasoby. 
+
+Święta zasada C# na temat `IDisposable` to:
+
+**Na każdym obiekcie implementującym `IDisposable` należy wywołać metodę `Dispose` DOKŁADNIE RAZ.**
+
+Jest jeszcze dość naturalna zasada, iż obiektów, które już zdisposowaliśmy nie można używać do niczego. Każdy call na obiekcie, który już był disposed ma święte prawo strzelić nam w twarz wyjątkiem (jest nawet specjalny wyjątek na takie okoliczności, `ObjectDisposedException`).
+
+Wspomnieliśmy wcześniej o bloku `finally`. Jest jednak o wiele przyjemniejszy syntax sugar w postaci dyrektywy `using`.
+
+#!csharp
+
+public class Repository : IDisposable
+{
+    public void DoStuff() => Console.WriteLine("Doing stuff...");
+    
+    public void Dispose() => Console.WriteLine("Disposing...");
+}
+
+public static void DoStuffWithRepo()
+{
+    using(var repo = new Repository())
+    {
+        repo.DoStuff();
+    }
+}
+
+DoStuffWithRepo();
+
+#!markdown
+
+albo krócej:
+
+#!csharp
+
+public static void DoStuffWithRepo()
+{
+    using var repo = new Repository();
+    repo.DoStuff();
+}
+
+DoStuffWithRepo();
+
+#!markdown
+
+jest równoważne
+
+#!csharp
+
+public static void DoStuffWithRepo()
+{
+    var repo = new Repository();
+    try 
+    {
+        repo.DoStuff();
+    }
+    finally
+    {
+        repo?.Dispose();
+    }
+}
+
+DoStuffWithRepo();
+
+#!markdown
+
+a więc posprzątamy nawet przy wyjątku:
+
+#!csharp
+
+public static void DoStuffWithRepo()
+{
+    using var repo = new Repository();
+
+    Console.WriteLine("Throwing!");
+    throw new InvalidOperationException("Tee hee!");
+
+    repo.DoStuff();
+}
+
+DoStuffWithRepo();
+
+#!markdown
+
+<h3 id="atrybuty">1.39 Atrybuty</h3> <small><a href="#toc">Back to top</a></small>
+
+Atrybuty zawierają metadane. Same z siebie nie za wiele robią, ale można się do nich dostać przez refleksję i wyłuskać dane (będziemy ich bardzo używać przy ASP i EF). Każdy atrybut ma nazwę kończącą się na `Attribute` i dziedziczy po `Attribute`.
+Przykładowo atrybut `ObsoleteAttribute`, używany przez kompilator do nakrzyczenia na użytkownika danej metody:
+
+#!csharp
+
+public class MyClass
+{
+    [Obsolete]
+    public void MyMethod()
+    {
+        /* ... */
+    }
+}
+
+#!markdown
+
+Jeśli konstruktor atrybutu przyjmuje jakieś argumenty, to podajemy je w tagu.
+
+#!csharp
+
+public class MyClass
+{
+    [Obsolete("This method is deprecated because of reasons, don't use it")]
+    public void MyMethod()
+    {
+        /* ... */
+    }
+}
+
+#!markdown
+
+<h3 id="-nameof-">1.40 `nameof`</h3> <small><a href="#toc">Back to top</a></small>
+
+`nameof` zostaje statycznie zamienione na nazwę zmiennej/pola/metody etc.
+
+#!csharp
+
+public class Duck
+{
+    public void Squeak() => Console.WriteLine("Squeak!");
+}
+
+var duck = new Duck();
+Console.WriteLine($"{nameof(Duck)}!");
+Console.WriteLine($"{nameof(duck)}!");
+Console.WriteLine($"{nameof(duck.Squeak)}!");
+
+#!markdown
+
+<h3 id="anonimowe-obiekty">1.41 Anonimowe obiekty</h3> <small><a href="#toc">Back to top</a></small>
+
+Czasami potrzebujemy stworzyć sobie jakiś prosty obiekt po prostu grupujący jakieś wartości razem. Tworzenie za każdym razem specjalnej klasy i wołanie jej konstruktora byłoby żmudne, dlatego możemy sobie stworzyć typ anonimowy:
+
+#!csharp
+
+var someData = new
+{
+    Name = "Jacuś",
+    Color = Color.Green
+};
+
+Console.WriteLine(someData);
+
+#!markdown
+
+Nazwy tego typu nie da się nigdzie użyć, więc z reguły jego użycie jest ograniczone do lokalnych transformacji. By necessity zmienne z takimi obiektami trzeba deklarować z `var`. Bardzo się przydadzą przy LINQ, o którym już za chwilę.
+
+#!markdown
+
+<h3 id="delegates">1.42 Delegates</h3> <small><a href="#toc">Back to top</a></small>
+
+Delegaty to type-safe function references. Najpierw trzeba zadeklarować sam typ:
+
+#!csharp
+
+public delegate int BinaryOperator(int lhs, int rhs);
+
+#!markdown
+
+Może on być składową jakiejś klasy albo być luzem w namespace'ie. Następnie możemy przypisać do zmiennej tego typu jakąś metodę i ją wywołać.
+
+#!csharp
+
+public static int Plus(int a, int b) => a + b;
+
+BinaryOperator binaryOperator = Plus;
+
+Console.WriteLine(binaryOperator(17, 25));
+
+#!markdown
+
+.NET udostępnia dwa fundamentalne, generyczne typy delagatów:
+- `Action<T1, T2, ..., TN>` - metoda niezwracająca żadnej wartości, przyjmująca N argumentów typów kolejno `T1`, `T2`, ..., `TN`;
+- `Func<T1, T2, ..., TN, TResult>` - metoda zwracająca `TResult` i przyjmująca N argumentów  typów kolejno `T1`, `T2`, ..., `TN`;
+
+Jeśli przypiszemy do delegata instance method, to delegat złapie tę konkretną instancję i `this` w ciele przypisanej metody będzie się do niej odwoływać.
+
+#!markdown
+
+<h3 id="lambdy">1.43 Lambdy</h3> <small><a href="#toc">Back to top</a></small>
+
+Bardzo często do delegatów przypisujemy krótkie wyrażenia i nie ma sensu tworzyć dla nich dedykowanych metod. I tu wchodzą lambdy, całe na biało.
+
+#!csharp
+
+BinaryOperator binaryOperator = (int a, int b) => a + b;
+
+#!markdown
+
+Typy mogą zostać wydedukowane przez kompilator.
+
+#!csharp
+
+BinaryOperator binaryOperator = (a, b) => a + b;
+
+#!markdown
+
+Mogą mieć pełnoprawne ciała:
+
+#!csharp
+
+BinaryOperator binaryOperator = (a, b) =>
+{
+    Console.WriteLine("Lambdas are awesome!");
+    return a + b;
+};
+Console.WriteLine(binaryOperator(17, 25));
+
+#!markdown
+
+Argumenty lambd mogą być `ref` i `out`. 
+Lambdy mogą nie mieć argumentów
+
+#!csharp
+
+Func<int> f = () => 42;
+
+#!markdown
+
+mogą  nic nie zwracać
+
+#!csharp
+
+Action<int> f = x => Console.WriteLine(x);
+
+#!markdown
+
+mogą nic nie przyjmować i nic nie zwracać
+
+#!csharp
+
+Action f = () => Console.WriteLine(42);
+
+#!markdown
+
+No i lambdy są kompatybilne z dowolnym delegatem o odpowiedniej sygnaturze.
+
+#!csharp
+
+BinaryOperator bin = (a, b) => a + b;
+Func<int, int, int> fun = (a, b) => a + b;
+
+#!markdown
+
+<h3 id="lokalne-metody">1.44 Lokalne metody</h3> <small><a href="#toc">Back to top</a></small>
+
+Czasami chcemy mieć metodę, którą wywołamy kilkukrotnie w czasie wywoływania naszej logiki. Nie chcemy powtarzać kodu, ale nie chcemy też tworzyć pomocniczej metody używanej tylko w jednym miejscu i nie mającej wartości poza tym konkretnym miejscem. Można wtedy użyć lokalnej metody:
+
+#!csharp
+
+public static int CalculateStuff(params (int, int)[] vals)
+{
+    var sum = 0;
+
+    int Plus(int a, int b) => a + b;
+    int Minus(int a, int b) => a - b;
+
+    foreach(var (a, b) in vals)
+    {
+        sum += Plus(a, b) + Minus(a, b);
+    }
+    
+    return sum / vals.Length;
+}
+
+Console.WriteLine(CalculateStuff((17, 25), (11, 33), (35, 21)));
+
+#!markdown
+
+<h3 id="-linq">1.45  LINQ</h3> <small><a href="#toc">Back to top</a></small>
+
+Najlepszą część C# zostawiliśmy sobie na koniec. Language Integrated Query - LINQ (czyt. link) - to język zapytań do przetwarzania potokowego kolekcji w C#. Jest to zbiór extension methods zdefiniowanych na `IEnumerable` (LINQ to Objects), plikach XML (LINQ to XML) oraz bazach pod Entity Frameworkiem (LINQ to Entities). 
+
+Zakładając źródło postaci `IEnumerable<TSource>`, podstawowe operacje to:
+
+#!markdown
+
+<h3 id="-select----projekcja">1.46 `Select` - projekcja</h3> <small><a href="#toc">Back to top</a></small>
+`IEnumerable<U> Select(Func<TSource, U>)` pozwala na transformację danych. Funkcja jest wywoływana dla każdego elementu i zwracany jest enumerable wyników.
+
+#!csharp
+
+public class Duck
+{
+    public string Name { get; }
+
+    public Color Color { get; init ;} = Color.Yellow;
+
+    public Duck(string name) => Name = name;
+}
+
+var ducks = new List<Duck>
+{
+    new Duck("Jacuś"),
+    new Duck("Piotruś"),
+    new Duck("Azathoth") { Color = Color.Purple }
+};
+
+foreach(var name in ducks.Select(d => d.Name))
+{
+    Console.WriteLine(name);
+}
+
+#!markdown
+
+<h3 id="-where----selekcja-filtrowanie">1.47 `Where` - selekcja/filtrowanie</h3> <small><a href="#toc">Back to top</a></small>
+
+`IEnumerable<TSource> Where(Func<T, bool>)` zwraca elementy spełniające dany predykat.
+
+#!csharp
+
+var values = new[] { 7, 42, 21, 1, 8 };
+
+foreach(var val in values.Where(v => v >= 8))
+{
+    Console.WriteLine(val);
+}
+
+#!markdown
+
+<h3 id="-orderby----thenby----sortowanie">1.48 `OrderBy`, `ThenBy` - sortowanie</h3> <small><a href="#toc">Back to top</a></small>
+
+`IOrderedEnumerable<TSource> OrderBy(Func<TSource, TKey>)` - sortowanie po kluczu; na wynikowym `IOrderedEnumerable` można zastosować `ThenBy(Func<TSource, TKey>`, żeby posortować po drugiej (trzeciej, czwartej...) wartości.
+
+#!csharp
+
+var ducks = new List<Duck>
+{
+    new Duck("Jacuś"),
+    new Duck("Piotruś"),
+    new Duck("Azathoth"),
+    new Duck("Psuchawrl")
+};
+
+foreach(var duck in ducks.OrderBy(d => d.Name[0]).ThenBy(d => d.Name.Length))
+{
+    Console.WriteLine(duck.Name);
+}
+
+#!markdown
+
+Wariantem są `OrderByDescending` oraz `ThenByDescending`.
+
+#!markdown
+
+<h3 id="-query-syntax">1.49  Query syntax</h3> <small><a href="#toc">Back to top</a></small>
+
+LINQ można też stosować z pseudo-SQLową składnią. Przykładowo:
+
+#!csharp
+
+var ducks = new List<Duck>
+{
+    new Duck("Jacuś"),
+    new Duck("Piotruś"),
+    new Duck("Azathoth") { Color = Color.Purple }
+};
+
+var result = ducks
+  .Where(d => d.Name.Length >= 7)
+  .OrderByDescending(d => d.Name.Length)
+  .Select(d => new { d.Name.Length, d.Color });
+
+foreach (var val in result)
+{
+    Console.WriteLine(val);
+}
+
+#!markdown
+
+to to samo co
+
+#!csharp
+
+var result = from d in ducks
+             where d.Name.Length >= 7
+             orderby d.Name.Length descending
+             select new { d.Name.Length, d.Color };
+
+foreach (var val in result)
+{
+    Console.WriteLine(val);
+}
+
+#!markdown
+
+W przypadku banalnych query, jak `list.Where(sth)`, lepiej użyć method syntax. Im bardziej skomplikowane query, tym większa szansa że query syntax będzie czytelniejszy. Pozwala on też na wprowadzanie tzw. transparent identifiers
+
+#!csharp
+
+var result = from d in ducks
+             let length = d.Name.Length
+             where length >= 7
+             orderby length  descending
+             select new { Length = length, d.Color };
+
+foreach (var val in result)
+{
+    Console.WriteLine(val);
+}
+
+#!markdown
+
+<h3 id="-selectmany----sp-aszczenie">1.50 `SelectMany` - spłaszczenie</h3> <small><a href="#toc">Back to top</a></small>
+
+`IEnumerable<TResult> SelectMany(Func<TSource, IEnumerable<TResult>)` wyłuskuje enumerable wyników z każdego elementu i łączy (spłaszcza) je w jeden.
+
+#!csharp
+
+var ducks = new List<Duck>
+{
+    new Duck("Jacuś"),
+    new Duck("Piotruś")
+};
+
+foreach(var letter in ducks.SelectMany(d => d.Name.ToCharArray()))
+{
+    Console.WriteLine(letter);
+}
+
+#!markdown
+
+W query syntax:
+
+#!csharp
+
+var result = from d in ducks
+             from l in duck.Name
+             select l;
+
+foreach (var letter in result)
+{
+    Console.WriteLine(letter);
+}
+
+#!markdown
+
+<h3 id="-groupby----grupowanie">1.51 `GroupBy` - grupowanie</h3> <small><a href="#toc">Back to top</a></small>
+
+`IEnumerable<IGrouping<TKey, TSource>> GroupBy(Func<TSource, TKey>)`  grupuje po kluczu; ma wiele przeładowań, może automatycznie robić projekcję wynikowych grupowań i stosować customowe komparatory.
+
+#!csharp
+
+var ducks = new List<Duck>
+{
+    new Duck("Jacuś") { Color = Color.Yellow },
+    new Duck("Piotruś") { Color = Color.Red },
+    new Duck("Jacuś") { Color = Color.Green }
+};
+
+foreach(var grouping in ducks.GroupBy(d => d.Name))
+{
+    Console.WriteLine($"Ducks with name {grouping.Key}:");
+    foreach(var duck in grouping)
+    {
+        Console.WriteLine($"{duck.Name}, {duck.Color} color");
+    }
+}
+
+#!markdown
+
+W query syntax:
+
+#!csharp
+
+var result = from d in ducks
+             group d by d.Name into g
+             select g;
+
+foreach(var grouping in result)
+{
+    Console.WriteLine($"Ducks with name {grouping.Key}:");
+    foreach(var duck in grouping)
+    {
+        Console.WriteLine($"{duck.Name}, {duck.Color} color");
+    }
+}
+
+#!markdown
+
+<h3 id="-join-">1.52 `Join`</h3> <small><a href="#toc">Back to top</a></small>
+
+`Join(IEnumerable<TInner>, Func<TSource,TKey>, Func<TInner,TKey>, Func<TSource,TInner,TResult>)` złącza dwa enumerable po kluczach i produkuje rezultat dla każdych dwóch zmatchowanych elementów.
+
+#!csharp
+
+var ducks = new List<Duck>
+{
+    new Duck("Jacuś") { Color = Color.Yellow },
+    new Duck("Jacuś") { Color = Color.Green },
+    new Duck("Piotruś") { Color = Color.Yellow }
+};
+var joined = ducks.Join(
+    ducks,
+    d => d.Name,
+    d => d.Name,
+    (d1, d2) => (d1.Name, d1.Color, d2.Color));
+    
+foreach(var (name, colorA, colorB) in joined)
+{
+    Console.WriteLine($"{name}: {colorA} - {colorB}");
+}
+
+#!markdown
+
+W query syntax:
+
+#!csharp
+
+var result = from d1 in ducks
+             join d2 in ducks on d1.Name equals d2.Name
+             select (d1.Name, d1.Color, d2.Color);
+
+foreach(var (name, colorA, colorB) in joined)
+{
+    Console.WriteLine($"{name}: {colorA} - {colorB}");
+}
+
+#!markdown
+
+<h3 id="inne">1.53 Inne</h3> <small><a href="#toc">Back to top</a></small>
+
+- `Distinct`, można podać własny komparator;
+- `Skip(int)` - wyrzuca n elementów z początku;
+- `SkipLast(int)` - wyrzuca, ale z końca;
+- `SkipWhile(Func<TSource, int, bool>)` - wyrzuca dopóki predykat jest spełniony;
+- `Take` - tak jak skip, tylko wybiera elementy zamiast wyrzucać
+- `Union`, `Intersect`, `Except` - suma, przecięcie, różnica dwóch enumerabli
+- `Zip` - splot, taki `Select` na dwóch enumerablach  jednocześnie
+
+#!markdown
+
+<h3 id="deferred-execution">1.54 Deferred execution</h3> <small><a href="#toc">Back to top</a></small>
+
+Wszystkie powyższe metody tak naprawdę się nie wykonują. LINQ buduje sobie plan wykonania zbudowanego query i wykona go dopiero przy enumeracji, to znaczy po wrzuceniu do `foreacha` albo wykonaniu jednej z operacji, które już muszą zostać wykonane natychmiastowo (agregacje i budowanie kolekcji).
+Warto o tym pamiętać, po pierwsze dzięki temu można sobie złożyć zapytanie bardzo szybko z gotowych klocków i odpalić je asynchronicznie. Po drugie należy bardzo unikać tzw. multiple enumerations, przykładowo taki kod:
+
+#!csharp
+
+var ducks = new List<Duck>
+{
+    /* ... */
+};
+
+
+
+var names = ducks.Select(d => d.Name); // Deffered, no projection happens here.
+
+foreach(var name in ducks) // Enumeration, the query fires.
+{
+    Console.WriteLine(name);
+}
+
+foreach(var name in ducks) // Another enumeration, another execution.
+{
+    /* ... */
+}
+
+#!markdown
+
+wywołuje selekcję dwa razy. Wystarczy sobie wyobrazić, że koszt wywołania tamtej metody jest bardzo duży, albo np. operujemy na tabeli w bazie danych i robimy dwa zapytania z tym samym wynikiem zamiast jednego.
+
+#!csharp
+
+var numbers = new [] { 4, 8, 16 };
+
+int ProjectionWithSideeffects(int number)
+{
+    Console.WriteLine($"Projecting {number}");
+    return number * 3;
+}
+
+var projection = numbers.Select(n => ProjectionWithSideeffects(n));
+
+Console.WriteLine($"{nameof(projection)} created.");
+
+Console.WriteLine();
+Console.WriteLine("Enumerating once.");
+foreach (var n in projection)
+{
+    Console.WriteLine($"Received {n}");
+}
+
+Console.WriteLine();
+Console.WriteLine("Enumerating again.");
+
+foreach (var n in projection)
+{
+    Console.WriteLine($"Received {n}");
+}
+
+#!markdown
+
+Wszystkie kolejne operacje LINQ wymienione w tej prezentacji powodują immediate execution.
+
+#!markdown
+
+<h3 id="-tolist----execute-">1.55 `ToList` - execute!</h3> <small><a href="#toc">Back to top</a></small>
+
+Klasyka gatunku, jedna z najczęściej używanych operacji. Kiedy chcemy wykonać swoje query i zapisać wynik w `List<TResult>` wywołujemy `ToList()`. Można tym też przerobić dowolny `IEnumerable` na listę, np. `Array` czy `Dictionary`.
+
+Koledzy `ToList` to:
+- `ToArray`
+- `ToDictionary`
+- `ToHashSet`
+- `ToLookup`
+
+#!markdown
+
+<h3 id="agregacje">1.56 Agregacje</h3> <small><a href="#toc">Back to top</a></small>
+
+- `int Max(Func<TSource, int>)`,
+- `int Min(Func<TSource, int>)`,
+- `int Sum(Func<TSource, int>)`,
+- `int Average(Func<TSource, int>)`
+- `TResult Aggregate(TResult, Func<TResult, TSource, TRessult>)` 
+
+Agregują enumerable i zwracają odpowiednio maksimum, minimum, sumę, średnią i dowolną customową agregację.
+
+#!csharp
+
+var ducks = new List<Duck>
+{
+    new Duck("Jacuś"),
+    new Duck("Piotruś"),
+    new Duck("Azathoth"),
+    new Duck("Psuchawrl")
+};
+
+Console.WriteLine(ducks.Aggregate(0, (a, d) => (a + d.Name.Length) % 2));
+
+#!csharp
+
+var numbers = new [] { 4, 8, 16 };
+
+int ProjectionWithSideeffects(int number)
+{
+    Console.WriteLine($"Projecting {number}");
+    return number * 3;
+}
+
+var projection = numbers.Select(n => ProjectionWithSideeffects(n));
+
+Console.WriteLine($"{nameof(projection)} created.");
+
+var list = projection.ToList(); // Execution happens here.
+
+Console.WriteLine($"{nameof(list)} created.");
+
+Console.WriteLine();
+Console.WriteLine("Enumerating once.");
+foreach (var n in list)
+{
+    Console.WriteLine($"Received {n}");
+}
+
+Console.WriteLine();
+Console.WriteLine("Enumerating again.");
+
+foreach (var n in list)
+{
+    Console.WriteLine($"Received {n}");
+}
+
+#!markdown
+
+<h3 id="-first----last----single-">1.57 `First`, `Last`, `Single`</h3> <small><a href="#toc">Back to top</a></small>
+
+- `TSource First()`, `TSource  First(Func<TSource, bool>)`
+- `TSource Last()`, `TSource  Last(Func<TSource, bool>)`
+- `TSource Single()`, `TSource  Single(Func<TSource, bool>)`
+
+Wybiera odpowiednio pierwszy, ostatni i jedyny element spełniający dany predykat. Jeśli taki element nie istnieje, rzuca `InvalidOperationException`.
+W przypadku `Single`, jeśli istnieje więcej niż jeden taki element, również rzuca `InvalidOperationException`.
+
+Istnieją warianty `FirstOrDefault`, `LastOrDefault`, `SingleOrDefault`, które nie rzucają wyjątku w postaci nieznalezienia żadnego elementu, tylko zwracają `default(TSource)`.
+
+#!csharp
+
+var ducks = new List<Duck>
+{
+    new Duck("Jacuś"),
+    new Duck("Piotruś"),
+    new Duck("Azathoth"),
+    new Duck("Psuchawrl")
+};
+
+var firstLong = ducks.First(d => d.Name.Length > 7);
+Console.WriteLine(firstLong.Name);
+
+#!markdown
+
+<h3 id="-count-">1.58 `Count`</h3> <small><a href="#toc">Back to top</a></small>
+
+Zwraca liczbę elementów. Tutaj w szczególności zwróćmy uwagę na deferred execution.
+
+#!csharp
+
+var src = _repository.Ducks;
+for(var i = 1; i <= src.Count(); ++i)
+{
+    /* ... */
+}
+for(var i = 1; i <= src.Count(); ++i)
+{
+    /* ... */
+}
+
+#!markdown
+
+Powyższy kod powoduje dwa wykonania LINQ i jeśli źródło danych nie zna swojej wielkości, to możemy zapłacić dwa razy za przejrzenie całej zawartości.
+
+Dodatkowo używanie `Count` do sprawdzenia pustości, czyli
+
+#!csharp
+
+var isEmpty = src.Count() == 0;
+
+#!markdown
+
+jest skrajnie nieinteligentne, bo może zająć czas liniowy od wielkości kolekcji.
+
+#!markdown
+
+<h3 id="-all----any-">1.59 `All`, `Any`</h3> <small><a href="#toc">Back to top</a></small>
+
+Sprawdza, czy predykat zachodzi dla każdego/jakiegokolwiek elementu. Oczywiście nie jest głupie i breakuje wcześnie jeśli odpowiedź jest ustalona.
+
+#!csharp
+
+var ducks = new List<Duck>
+{
+    new Duck("Jacuś"),
+    new Duck("Piotruś"),
+    new Duck("Azathoth"),
+    new Duck("Psuchawrl")
+};
+
+var anyLongNames = ducks.Any(d => d.Name.Length > 8);
+Console.WriteLine(anyLongNames);
+var allLongNames = ducks.All(d => d.Name.Length > 8);
+Console.WriteLine(allLongNames);
+
+#!markdown
+
+W C# pustość sprawdzamy `collection.Any()`.
+
+#!markdown
+
+<h2 id="materia-y">2. Materiały</h2> <small><a href="#toc">Back to top</a></small>
+
+- Reszta tutoriala (Blazor i przykładowa aplikacja): https://mimuw.edu.pl/~mg394302/bd2021-csharp.html
+- To repozytorium: https://github.com/V0ldek/CSharp-LightningCourse
